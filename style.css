@@ -8,3 +8,11 @@ button {
     grid-template-columns: repeat(3, 100px);
     grid-template-rows: repeat(3, 100px);
 }
+
+.cell {
+    background-color: white;
+}
+
+.active-player {
+    font-weight: 700;
+}
