@@ -20,18 +20,15 @@ const gameBoard = (() => {
 	return { getBoard, receiveMarker, resetBoard };
 })();
 
-const gameController = ((
-	playerOneName = "Player One",
-	playerTwoName = "Player Two"
-) => {
+const gameController = (() => {
 	const players = [
 		{
-			name: playerOneName,
+			name: "Player One",
 			marker: "X",
 			wins: 0,
 		},
 		{
-			name: playerTwoName,
+			name: "Player Two",
 			marker: "O",
 			wins: 0,
 		},
@@ -45,6 +42,16 @@ const gameController = ((
 	const getActivePlayer = () => activePlayer;
 
 	const getPlayers = () => players;
+
+	const changePlayerName = (player, newName) => {
+		if (player === "player-one-name") {
+			players[0].name = newName;
+		} else {
+			players[1].name = newName;
+		}
+		switchPlayerTurn();
+		switchPlayerTurn();
+	};
 
 	const gameOver = () => {
 		const board = gameBoard.getBoard();
@@ -86,7 +93,7 @@ const gameController = ((
 		}
 
 		if (tieGame()) {
-			alert('Stalemate!')
+			alert("Stalemate!");
 			gameBoard.resetBoard();
 		}
 
@@ -94,6 +101,7 @@ const gameController = ((
 	};
 
 	return {
+		changePlayerName,
 		playRound,
 		getPlayers,
 	};
@@ -102,6 +110,12 @@ const gameController = ((
 const screenController = (() => {
 	const boardDiv = document.querySelector(".gameboard");
 	boardDiv.addEventListener("click", clickHandlerBoard);
+
+	const playerOneName = document.querySelector("#player-one-name");
+	playerOneName.addEventListener("blur", nameChangeHandler);
+
+	const playerTwoName = document.querySelector("#player-two-name");
+	playerTwoName.addEventListener("blur", nameChangeHandler);
 
 	const playerOneScore = document.querySelector("#player-one-score");
 	const playerTwoScore = document.querySelector("#player-two-score");
@@ -120,6 +134,9 @@ const screenController = (() => {
 			const cellButton = document.createElement("button");
 
 			cellButton.classList.add("cell");
+			cellButton.classList.add(`cell-${index}`);
+			cellButton.classList.add(`ripple`);
+
 			cellButton.dataset.index = index;
 			cellDiv.appendChild(cellButton);
 
@@ -140,4 +157,11 @@ function clickHandlerBoard(e) {
 
 	gameController.playRound(selectedCell);
 	screenController.updateScreen();
+}
+
+function nameChangeHandler(e) {
+	const player = e.target.id;
+	const newName = e.target.value;
+
+	gameController.changePlayerName(player, newName);
 }
